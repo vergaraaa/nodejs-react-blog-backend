@@ -17,7 +17,19 @@ app.use(express.json()); // use body as js object
 app.use(morgan("dev"));
 
 // Routes
+app.get("/", (req, res) => {
+    res.status(200).send(
+        "<h1>Nodejs React Blog App</h1>"
+    );
+});
 
+app.get("/test", (req, res) => {
+    console.log("test route");
+
+    res.status(200).json({
+        msg: "hello!"
+    });
+});
 
 // Create server and listen 
 app.listen(port, () => {
