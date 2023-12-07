@@ -14,6 +14,7 @@ const port = 4000;
 // Middlewares
 app.use(cors());
 app.use(express.json()); // use body as js object
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
 // Routes
