@@ -1,5 +1,6 @@
 const validator = require('validator');
 const Article = require("../models/Article");
+const e = require('cors');
 
 const test = async (req, res) => {
     return res.status(200).json({
@@ -48,7 +49,23 @@ const createArticle = async (req, res) => {
     });
 }
 
+const getArticles = async (req, res) => {
+    try {
+        const articles = await Article.find();
+
+        return res.status(200).json(
+            articles
+        );
+    } catch (error) {
+        return res.status(500).json({
+            status: "error",
+            msg: "Internal Server Error"
+        });
+    }
+}
+
 module.exports = {
     test,
     createArticle,
+    getArticles,
 }
