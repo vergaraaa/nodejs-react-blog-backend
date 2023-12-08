@@ -51,7 +51,9 @@ const createArticle = async (req, res) => {
 
 const getArticles = async (req, res) => {
     try {
-        const articles = await Article.find();
+        const articles = await Article
+            .find({})
+            .sort({ date: -1 })
 
         return res.status(200).json(
             articles
