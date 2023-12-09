@@ -51,9 +51,12 @@ const createArticle = async (req, res) => {
 
 const getArticles = async (req, res) => {
     try {
+        const { limit } = req.params;
+
         const articles = await Article
             .find({})
             .sort({ date: -1 })
+            .limit(limit);
 
         return res.status(200).json(
             articles

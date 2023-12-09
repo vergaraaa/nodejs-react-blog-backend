@@ -5,8 +5,9 @@ const router = Router();
 
 router.get("/test-route", test)
 
-router.route("/")
-    .get(getArticles)
-    .post(createArticle);
+
+router.get("/:limit?", getArticles);
+
+router.post("/", createArticle);
 
 module.exports = router;
