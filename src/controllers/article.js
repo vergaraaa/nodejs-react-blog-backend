@@ -92,6 +92,49 @@ const getArticleWithId = async (req, res) => {
     }
 }
 
+const updateArticle = async (req, res) => {
+    let body = req.body;
+
+    try {
+        // validate data
+        let validateTitle = !validator.isEmpty(body.title)
+            && validator.isLength(body.title, { min: 5, max: undefined });
+        let validateContent = !validator.isEmpty(body.content);
+
+        if (!validateTitle || !validateContent) {
+            throw new Error("data not validated");
+        }
+    } catch (error) {
+        return res.status(400).json({
+            status: "error",
+            msg: "incorrect data",
+        });
+    }
+
+    try {
+        const { id } = req.params;
+
+        const article = await Article.findOneAndUpdate({ _id: id }, body, { new: true });
+
+        if (!article) {
+            return res.status(404).json({
+                status: "error",
+                msg: "Article not found"
+            });
+        }
+
+        return res.status(200).json({
+            status: "success edit",
+            article,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: "error",
+            msg: "Internal Server Error"
+        });
+    }
+}
+
 const deleteArticle = async (req, res) => {
     try {
         const { id } = req.params;
@@ -122,5 +165,6 @@ module.exports = {
     createArticle,
     getArticles,
     getArticleWithId,
-    deleteArticle
+    updateArticle,
+    deleteArticle,
 }
