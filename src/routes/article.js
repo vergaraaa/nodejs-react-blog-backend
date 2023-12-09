@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { test, createArticle, getArticles } = require('../controllers/article');
+const { test, createArticle, getArticles, getArticleWithId } = require('../controllers/article');
 
 const router = Router();
 
@@ -8,6 +8,10 @@ router.get("/test-route", test)
 
 router.get("/:limit?", getArticles);
 
-router.post("/", createArticle);
+router.get("/one/:id", getArticleWithId);
+
+router.post("/create", createArticle);
+
+
 
 module.exports = router;
