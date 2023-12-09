@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { test, createArticle, getArticles, getArticleWithId } = require('../controllers/article');
+const { test, createArticle, getArticles, getArticleWithId, deleteArticle } = require('../controllers/article');
 
 const router = Router();
 
@@ -12,6 +12,7 @@ router.get("/one/:id", getArticleWithId);
 
 router.post("/create", createArticle);
 
+router.delete("/one/:id", deleteArticle);
 
 
 module.exports = router;

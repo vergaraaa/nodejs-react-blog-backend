@@ -92,9 +92,35 @@ const getArticleWithId = async (req, res) => {
     }
 }
 
+const deleteArticle = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const article = await Article.findOneAndDelete({ _id: id });
+
+        if (!article) {
+            return res.status(404).json({
+                status: "error",
+                msg: "Article not found"
+            });
+        }
+
+        return res.status(200).json({
+            status: "success",
+            article
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: "error",
+            msg: "Internal Server Error"
+        });
+    }
+
+}
+
 module.exports = {
     test,
     createArticle,
     getArticles,
     getArticleWithId,
+    deleteArticle
 }
