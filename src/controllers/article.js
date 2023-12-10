@@ -1,6 +1,6 @@
-const validator = require('validator');
+const { validateArticle } = require("../helpers/validateArticle");
 const Article = require("../models/Article");
-const e = require('cors');
+
 
 const test = async (req, res) => {
     return res.status(200).json({
@@ -9,18 +9,8 @@ const test = async (req, res) => {
 }
 
 const createArticle = async (req, res) => {
-
-    let body = req.body;
-
     try {
-        // validate data
-        let validateTitle = !validator.isEmpty(body.title)
-            && validator.isLength(body.title, { min: 5, max: undefined });
-        let validateContent = !validator.isEmpty(body.content);
-
-        if (!validateTitle || !validateContent) {
-            throw new Error("data not validated");
-        }
+        validateArticle(req.body);
     } catch (error) {
         return res.status(400).json({
             status: "error",
@@ -29,7 +19,7 @@ const createArticle = async (req, res) => {
     }
 
     // Create object
-    const article = new Article(body);
+    const article = new Article(req.body);
 
     // Save in database
     const newArticle = await article.save();
@@ -93,17 +83,8 @@ const getArticleWithId = async (req, res) => {
 }
 
 const updateArticle = async (req, res) => {
-    let body = req.body;
-
     try {
-        // validate data
-        let validateTitle = !validator.isEmpty(body.title)
-            && validator.isLength(body.title, { min: 5, max: undefined });
-        let validateContent = !validator.isEmpty(body.content);
-
-        if (!validateTitle || !validateContent) {
-            throw new Error("data not validated");
-        }
+        validateArticle(req.body);
     } catch (error) {
         return res.status(400).json({
             status: "error",
@@ -114,7 +95,7 @@ const updateArticle = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const article = await Article.findOneAndUpdate({ _id: id }, body, { new: true });
+        const article = await Article.findOneAndUpdate({ _id: id }, req.body, { new: true });
 
         if (!article) {
             return res.status(404).json({
