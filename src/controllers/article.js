@@ -1,5 +1,8 @@
+const fs = require('fs');
+
 const { validateArticle } = require("../helpers/validateArticle");
 const Article = require("../models/Article");
+const { error } = require('console');
 
 
 const test = async (req, res) => {
@@ -141,6 +144,43 @@ const deleteArticle = async (req, res) => {
 
 }
 
+const uploadImage = async (req, res) => {
+    // get file
+    if (!req.file && !req.files) {
+        return res.status(404).json({
+            status: "error",
+            msg: "Invalid request"
+        });
+    }
+
+    // filename
+    let filename = req.file.originalname;
+
+    // file extension
+    let fileSplit = filename.split("\.");
+    let extension = fileSplit[1];
+
+    // validate extension
+    if (extension != "png" && extension != "jpg" &&
+        extension != "jpeg" && extension != "gif") {
+        // delete file if not valid
+        fs.unlink(req.file.path, (error) => {
+            return res.status(400).json({
+                status: "error",
+                msg: "Invalid image"
+            });
+        })
+    } else {
+        // update article
+
+        // response
+        return res.status(200).json({
+            status: "success",
+            files: req.file
+        });
+    }
+}
+
 module.exports = {
     test,
     createArticle,
@@ -148,4 +188,5 @@ module.exports = {
     getArticleWithId,
     updateArticle,
     deleteArticle,
+    uploadImage,
 }
