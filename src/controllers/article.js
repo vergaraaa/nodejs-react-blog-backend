@@ -227,6 +227,29 @@ const getImage = async (req, res) => {
     }
 }
 
+const searchArticles = async (req, res) => {
+    // get search query
+    let { query } = req.params;
+
+
+    try {
+        const articles = await Article.find({
+            "$or": [
+                { "title": { "$regex": query, "$options": "i" } },
+                { "content": { "$regex": query, "$options": "i" } },
+            ]
+        })
+            .sort({ date: -1 });
+
+        return res.status(200).json(articles);
+    } catch (error) {
+        return res.status(500).json({
+            status: "error",
+            msg: "Internal Server Error"
+        });
+    }
+}
+
 module.exports = {
     test,
     createArticle,
@@ -236,4 +259,5 @@ module.exports = {
     deleteArticle,
     uploadImage,
     getImage,
+    searchArticles,
 }

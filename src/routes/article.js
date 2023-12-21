@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const multer = require('multer');
 
-const { test, createArticle, getArticles, getArticleWithId, deleteArticle, updateArticle, uploadImage, getImage } = require('../controllers/article');
+const { test, createArticle, getArticles, getArticleWithId, deleteArticle, updateArticle, uploadImage, getImage, searchArticles } = require('../controllers/article');
 
 const router = Router();
 
@@ -32,5 +32,6 @@ router.post("/upload-image/:id", [uploads.single("file")], uploadImage)
 
 router.get("/image/:file", getImage);
 
+router.get("/search/:query", searchArticles);
 
 module.exports = router;
