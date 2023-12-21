@@ -1,9 +1,8 @@
 const fs = require('fs');
+const path = require('path');
 
 const { validateArticle } = require("../helpers/validateArticle");
 const Article = require("../models/Article");
-const { error } = require('console');
-
 
 const test = async (req, res) => {
     return res.status(200).json({
@@ -172,11 +171,58 @@ const uploadImage = async (req, res) => {
         })
     } else {
         // update article
+        try {
+            const { id } = req.params;
 
-        // response
-        return res.status(200).json({
-            status: "success",
-            files: req.file
+            const article = await Article.findOneAndUpdate({ _id: id }, { image: req.file.filename }, { new: true });
+
+            if (!article) {
+                return res.status(404).json({
+                    status: "error",
+                    msg: "Article not found"
+                });
+            }
+
+            // response
+            return res.status(200).json({
+                status: "success photo edit",
+                article,
+                file: req.file,
+            });
+        } catch (error) {
+            return res.status(500).json({
+                status: "error",
+                msg: "Internal Server Error"
+            });
+        }
+    }
+}
+
+const getImage = async (req, res) => {
+    let file = req.params.file;
+    let filePath = "./src/images/articles/" + file;
+
+    console.log(filePath);
+
+    try {
+        fs.stat(filePath, (error, exists) => {
+            if (exists) {
+                return res.sendFile(path.resolve(filePath));
+            }
+            else {
+                return res.status(404).json({
+                    status: "error",
+                    msg: "Image not found",
+                    exists,
+                    file,
+                    filePath,
+                });
+            }
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: "error",
+            msg: "Internal Server Error"
         });
     }
 }
@@ -189,4 +235,5 @@ module.exports = {
     updateArticle,
     deleteArticle,
     uploadImage,
+    getImage,
 }
